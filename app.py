@@ -1,11 +1,8 @@
 import streamlit as st
-import google.generativeai as genai
-import os
+from google import genai
 
 # --- SETUP & SECURITY ---
-# We use Streamlit secrets to hide the API key (Addresses the "Security" evaluation criteria)
-API_KEY = st.secrets["GEMINI_API_KEY"]
-genai.configure(api_key=API_KEY)
+client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
 
 # --- UI / ACCESSIBILITY ---
 st.set_page_config(page_title="Smog Survival Assistant", page_icon="😷")
@@ -17,17 +14,13 @@ with st.form("user_input_form"):
     location = st.text_input("Your City / Location", placeholder="e.g., Delhi, India")
     lifestyle = st.selectbox("Your Primary Daily Routine", ["Work from Home", "Office Commuter", "Student", "Outdoor Worker", "Stay-at-home Parent"])
     vulnerable_members = st.checkbox("Are there children, elderly, or asthma patients in your household?")
-
     submit_button = st.form_submit_button(label="Generate My Survival Plan")
 
 # --- AI GENERATION ---
 if submit_button and location:
     with st.spinner("Analyzing local air quality strategies..."):
         try:
-            # Problem Statement Alignment: Tailoring to location, lifestyle, and emissions
-            model = genai.GenerativeModel('gemini-1.5-flash')
             vulnerability_note = "Focus heavily on protecting vulnerable household members." if vulnerable_members else ""
-
             prompt = f"""
             You are an expert environmental health assistant. The user lives in {location} and their lifestyle is: {lifestyle}.
             {vulnerability_note}
@@ -39,7 +32,10 @@ if submit_button and location:
             4. Impact: Briefly explain the direct positive impact of these choices on their health and community.
             """
 
-            response = model.generate_content(prompt)
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt,
+            )
             st.success("Plan Generated Successfully!")
             st.markdown(response.text)
         except Exception as e:
