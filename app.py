@@ -43,4 +43,4 @@ if submit_button and location:
             st.success("Plan Generated Successfully!")
             st.markdown(response.text)
         except Exception as e:
-            st.error("An error occurred. Please try again later.")
+            st.error(f"Error details: {e}")
