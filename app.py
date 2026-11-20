@@ -2,7 +2,11 @@ import streamlit as st
 from google import genai
 
 # --- SETUP & SECURITY ---
-client = genai.Client(vertexai=True, api_key=st.secrets["GEMINI_API_KEY"])
+client = genai.Client(
+    vertexai=True,
+    api_key=st.secrets["GEMINI_API_KEY"]
+)
+
 # --- UI / ACCESSIBILITY ---
 st.set_page_config(page_title="Smog Survival Assistant", page_icon="😷")
 st.title("🌬️ Smog Survival & Air Quality Assistant")
