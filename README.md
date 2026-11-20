@@ -1,1 +1,1 @@
-# smog-survival-assistant
+# smog-survival-web
